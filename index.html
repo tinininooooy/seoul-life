@@ -42,6 +42,11 @@
         background: #FEE500; color: #1c1c1e; font-weight: 700; border: none;
         padding: 14px; border-radius: 12px; font-size: 16px; width: 100%; cursor: pointer;
     }
+    .setup-skip {
+        width: 100%; margin-top: 10px; padding: 10px; border: 0; background: transparent;
+        color: #8e8e93; font-size: 13px; cursor: pointer;
+    }
+    .setup-hint { color: #6e6e73; font-size: 11px; line-height: 1.5; margin-top: 8px; }
     .upload-label { background: #3a3a3c; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; }
 
     /* ========== 手机外壳 ========== */
@@ -95,7 +100,7 @@
     .clock-widget .date { font-size: 15px; font-weight: 500; color: #3a3a3c; margin-top: 6px; }
     .clock-widget .location { font-size: 12px; color: #8e8e93; margin-top: 2px; }
     .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 14px; padding-top: 4px; }
-    .app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.15s; }
+    .app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.15s; position: relative; }
     .app:active { transform: scale(0.88); }
     .app-icon { width: 60px; height: 60px; border-radius: 15px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.15); flex-shrink: 0; }
     .app-icon svg { width: 100%; height: 100%; display: block; }
@@ -163,6 +168,20 @@
     .kakao-friend-info { flex: 1; overflow: hidden; }
     .kakao-friend-name { font-size: 15px; font-weight: 600; color: #1c1c1e; }
     .kakao-friend-msg { font-size: 13px; color: #8e8e93; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kakao-row-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-top: 3px; flex-shrink: 0; }
+    .kakao-row-time { font-size: 11px; color: #8e8e93; }
+    .kakao-unread {
+        min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+        background: #ff3b30; color: #fff; font-size: 10px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+    }
+    .app-badge {
+        position: absolute; top: -4px; right: -2px; min-width: 18px; height: 18px;
+        padding: 0 5px; border-radius: 9px; background: #ff3b30; color: #fff;
+        font-size: 10px; font-weight: 700; display: none; align-items: center;
+        justify-content: center; z-index: 5; border: 2px solid #f2f2f7;
+        box-sizing: content-box;
+    }
 
     /* 朋友圈 */
     .moment-card { padding: 16px; border-bottom: 0.5px solid #f0f0f0; }
@@ -195,6 +214,89 @@
     .kakao-chat-screen .app-header .back-btn { background: transparent; color: #1c1c1e; font-size: 24px; width: auto; padding-bottom: 2px;}
     .kakao-chat-header-title { font-size: 16px; font-weight: 600; flex:1; text-align: center; color: #1c1c1e;}
     .kakao-chat-header-icons { display: flex; gap: 16px; font-size: 20px; color: #1c1c1e; margin-right: 4px; }
+    .kakao-chat-header-icons span { cursor: pointer; }
+    .chat-menu-btn {
+        width: 32px; height: 32px; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+        flex-shrink: 0;
+    }
+    .chat-menu-btn span { width: 17px; height: 2px; background: #1c1c1e; border-radius: 2px; }
+    .plus-btn {
+        width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+        font-size: 27px; color: #1c1c1e; cursor: pointer; flex-shrink: 0; line-height: 1;
+    }
+    .plus-panel {
+        position: absolute; bottom: 60px; left: 0; right: 0; background: #fff;
+        border-top: .5px solid #e5e5ea; padding: 16px 12px; display: none;
+        grid-template-columns: repeat(5, 1fr); gap: 8px; z-index: 6;
+    }
+    .plus-panel.show { display: grid; }
+    .plus-item {
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        font-size: 10px; color: #3a3a3c; cursor: pointer;
+    }
+    .plus-item span {
+        width: 44px; height: 44px; border-radius: 13px; background: #f2f2f7;
+        display: flex; align-items: center; justify-content: center; font-size: 21px;
+    }
+    .chat-settings-sheet {
+        position: absolute; inset: 0; z-index: 45; background: rgba(0,0,0,.35);
+        display: none; align-items: flex-end;
+    }
+    .chat-settings-sheet.show { display: flex; }
+    .chat-settings-panel {
+        width: 100%; background: #fff; border-radius: 20px 20px 0 0;
+        padding: 10px 16px 20px; box-shadow: 0 -8px 30px rgba(0,0,0,.18);
+    }
+    .cs-handle { width: 36px; height: 4px; border-radius: 2px; background: #d1d1d6; margin: 0 auto 10px; }
+    .cs-title { text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 8px; }
+    .chat-settings-panel button {
+        display: block; width: 100%; border: 0; border-bottom: .5px solid #f0f0f0;
+        background: #fff; padding: 14px 4px; text-align: left; font-size: 15px;
+        color: #1c1c1e; cursor: pointer;
+    }
+    .chat-settings-panel .cs-cancel {
+        text-align: center; color: #007aff; border-bottom: 0; margin-top: 6px;
+        background: #f7f7f9; border-radius: 12px;
+    }
+    .k-call-overlay {
+        position: absolute; inset: 0; z-index: 50; background: linear-gradient(180deg,#1c1c1e,#000);
+        color: #fff; display: none; flex-direction: column; align-items: center;
+        justify-content: center; padding: 32px;
+    }
+    .k-call-overlay.show { display: flex; }
+    .k-call-video {
+        display: none; position: absolute; inset: 0; z-index: 1;
+        background: linear-gradient(135deg,#2c3e50,#4ca1af);
+        align-items: center; justify-content: center; flex-direction: column;
+        gap: 8px; font-size: 13px; color: rgba(255,255,255,.85);
+    }
+    .k-call-overlay.video .k-call-video { display: flex; }
+    .k-call-overlay.camera-off .k-call-video { background: #111; }
+    .k-call-overlay.camera-off .k-call-video-icon { display: none; }
+    .k-call-video-icon { font-size: 64px; opacity: .9; }
+    .k-call-person { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .k-call-overlay.video .k-call-person { position: absolute; bottom: 138px; left: 0; right: 0; }
+    .k-call-avatar {
+        width: 100px; height: 100px; border-radius: 50%; background: #3a3a3c;
+        display: flex; align-items: center; justify-content: center; font-size: 44px;
+        overflow: hidden; margin-bottom: 14px;
+    }
+    .k-call-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .k-call-name { font-size: 24px; font-weight: 600; }
+    .k-call-kind { font-size: 11px; color: #8e8e93; margin-top: 5px; }
+    .k-call-status { font-size: 13px; color: #d1d1d6; margin-top: 14px; }
+    .k-call-controls {
+        position: absolute; bottom: 42px; left: 0; right: 0; display: flex;
+        justify-content: center; gap: 22px; z-index: 3;
+    }
+    .k-call-controls button {
+        width: 58px; height: 58px; border-radius: 50%; border: 0; background: #2c2c2e;
+        color: #fff; font-size: 22px; cursor: pointer;
+    }
+    .k-call-controls .k-hangup { background: #ff3b30; }
+    #kakaoCameraBtn { display: none; }
+    .k-call-overlay.video #kakaoCameraBtn { display: flex; align-items: center; justify-content: center; }
 
     .kakao-chat-area { flex: 1; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; }
     .kakao-chat-area::-webkit-scrollbar { display: none; }
@@ -230,6 +332,13 @@
         color: #5c6b7a; background: rgba(255,255,255,.4); padding: 4px 10px;
         border-radius: 10px; margin: -6px 0 14px; line-height: 1.4;
     }
+    .k-continue {
+        align-self: center; margin: 2px 0 18px; padding: 9px 14px; border-radius: 18px;
+        background: rgba(255,255,255,.7); color: #44525f; font-size: 11px;
+        font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,.8);
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .k-continue.done { opacity: .7; cursor: default; }
     .image-preview {
         position: absolute; inset: 0; z-index: 999999; background: rgba(0,0,0,.92);
         display: none; align-items: center; justify-content: center; padding: 16px;
@@ -314,6 +423,11 @@
     }
     .wv-banner h3 { font-size: 18px; margin-bottom: 4px; }
     .wv-banner p { font-size: 12px; opacity: .85; }
+    .wv-members { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .wv-member {
+        background: rgba(255,255,255,.18); border: .5px solid rgba(255,255,255,.25);
+        border-radius: 12px; padding: 4px 8px; font-size: 10px; font-weight: 600;
+    }
     .wv-post { background: #f7f8f9; border-radius: 16px; padding: 14px; margin-bottom: 12px; }
     .wv-post .post-text { margin: 6px 0 8px; }
     .wv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin: 8px 0; }
@@ -711,6 +825,8 @@
             <div class="upload-label" onclick="document.getElementById('setupAvatarFile').click()">从图库选择头像</div>
         </div>
         <button class="setup-btn" onclick="completeSetup()">进入模拟器</button>
+        <button class="setup-skip" onclick="skipSetup()">不填写，直接进入</button>
+        <p class="setup-hint">昵称和头像都可以不填，默认以“林小满”进入。</p>
     </div>
 </div>
 
@@ -995,15 +1111,54 @@
             <div class="app-header">
                 <div class="back-btn" onclick="closeKakaoChat()">‹</div>
                 <div class="kakao-chat-header-title" id="chatTitle">聊天</div>
-                <div class="kakao-chat-header-icons">📞 ☰</div>
+                <div class="chat-menu-btn" onclick="openChatSettings()" title="聊天设置">
+                    <span></span><span></span><span></span>
+                </div>
             </div>
             <div class="kakao-chat-area" id="chatArea"></div>
             <div class="kakao-input-area">
+                <div class="plus-btn" onclick="togglePlusMenu()">＋</div>
+                <input type="text" id="chatInput" placeholder="输入消息，回车发送" inputmode="text" enterkeyhint="send" onfocus="onChatInputFocus()" onclick="handleInputClick()" onkeydown="if(event.key==='Enter'){event.preventDefault();sendMsg();}">
                 <div class="emoji-btn" onclick="toggleEmoji()">😊</div>
-                <input type="text" id="chatInput" placeholder="输入消息..." readonly onclick="handleInputClick()">
-                <div class="send-btn" onclick="sendMsg()">↑</div>
             </div>
+            <div class="plus-panel" id="plusPanel">
+                <div class="plus-item" onclick="pickChatImage()"><span>🖼️</span>图片</div>
+                <div class="plus-item" onclick="startKakaoCall('video')"><span>📹</span>视频通话</div>
+                <div class="plus-item" onclick="startKakaoCall('voice')"><span>📞</span>语音通话</div>
+                <div class="plus-item" onclick="sendTransfer()"><span>💰</span>转账</div>
+                <div class="plus-item" onclick="sendLocation()"><span>📍</span>定位</div>
+            </div>
+            <input type="file" id="chatImageFile" accept="image/*" style="display:none;" onchange="handleChatImage(event)">
             <div class="emoji-panel" id="emojiPanel"></div>
+
+            <div class="chat-settings-sheet" id="chatSettingsSheet" onclick="closeChatSettings(event)">
+                <div class="chat-settings-panel" onclick="event.stopPropagation()">
+                    <div class="cs-handle"></div>
+                    <div class="cs-title" id="chatSettingsName">聊天设置</div>
+                    <button id="blockChatBtn" onclick="blockCurrentChat()">🚫 拉黑</button>
+                    <button onclick="deleteCurrentChat()">🗑️ 删除聊天</button>
+                    <button id="favoriteChatBtn" onclick="favoriteCurrentChat()">⭐ 收藏</button>
+                    <button class="cs-cancel" onclick="closeChatSettings()">取消</button>
+                </div>
+            </div>
+
+            <div class="k-call-overlay" id="kakaoCallOverlay">
+                <div class="k-call-video" id="kakaoCallVideo">
+                    <div class="k-call-video-icon">📹</div>
+                    <div>视频画面将在后续更新</div>
+                </div>
+                <div class="k-call-person">
+                    <div class="k-call-avatar" id="kakaoCallAvatar">👩</div>
+                    <div class="k-call-name" id="kakaoCallName">妈妈</div>
+                    <div class="k-call-kind" id="kakaoCallKind">语音通话</div>
+                    <div class="k-call-status" id="kakaoCallStatus">正在呼叫…</div>
+                </div>
+                <div class="k-call-controls">
+                    <button id="kakaoMuteBtn" onclick="toggleKakaoMute()">🎙️</button>
+                    <button id="kakaoCameraBtn" onclick="toggleKakaoCamera()">📹</button>
+                    <button class="k-hangup" onclick="endKakaoCall()">✕</button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -1049,7 +1204,13 @@
 
     function completeSetup() {
         const nicknameInput = document.getElementById('setupNickname').value.trim();
-        if (nicknameInput) userProfile.nickname = nicknameInput;
+        userProfile.nickname = nicknameInput || userProfile.nickname || '林小满';
+        document.getElementById('setupModal').classList.add('hide');
+        initSimulator();
+    }
+
+    function skipSetup() {
+        userProfile.nickname = userProfile.nickname || '林小满';
         document.getElementById('setupModal').classList.add('hide');
         initSimulator();
     }
@@ -1119,15 +1280,18 @@
             { id: 'ig9', user: 'manzi.seoul', color: '#6228d7', emoji: '👭', bg: 'linear-gradient(135deg,#f953c6,#b91d73)', text: '和智媛的合照，小组作业终于结束了！', time: '昨天', likes: 238, comments: 19 }
         ],
         weverse: [
-            { id: 'wv1', user: 'RIIZE', member: 'Anton', color: '#00cbd5', text: '今天也来打卡！Anton 的自拍角度真的越来越好了。', time: '10分钟前', likes: 892, comments: 74 },
-            { id: 'wv2', user: 'RIIZE', member: 'BRIIZE', color: '#0077b6', text: '首尔场演唱会后遗症太严重了，每天都在循环现场视频。', time: '30分钟前', likes: 456, comments: 38 },
-            { id: 'wv3', user: 'RIIZE', member: 'BRIIZE', color: '#00cbd5', text: '有人一起去下个月的线下快闪店吗？想拼车。', time: '1小时前', likes: 122, comments: 26 },
-            { id: 'wv4', user: 'RIIZE', member: 'Anton', color: '#0077b6', text: '把 Anton 推荐的那首歌单听完了，品味真的很好。', time: '2小时前', likes: 337, comments: 29 },
-            { id: 'wv5', user: 'RIIZE', member: 'BRIIZE', color: '#00cbd5', text: '今天收到专辑了，小卡抽到了本命，手气爆棚！', time: '3小时前', likes: 601, comments: 52 },
-            { id: 'wv6', user: 'RIIZE', member: 'BRIIZE', color: '#0077b6', text: '想问一下大家，Weverse 的会员礼一般多久发货呀？', time: '4小时前', likes: 88, comments: 31 },
-            { id: 'wv7', user: 'RIIZE', member: 'BRIIZE', color: '#00cbd5', text: '整理了一下这次回归的打歌服，最喜欢那套银色夹克。', time: '5小时前', likes: 274, comments: 20 },
-            { id: 'wv8', user: 'RIIZE', member: 'Anton', color: '#0077b6', text: 'BRIIZE 们晚安，今天也辛苦啦。', time: '6小时前', likes: 1024, comments: 118 },
-            { id: 'wv9', user: 'RIIZE', member: 'BRIIZE', color: '#00cbd5', text: '在学应援法，韩语念快了还是会嘴瓢。', time: '昨天', likes: 193, comments: 24 }
+            { id: 'wv-shotaro-1', user: 'RIIZE', member: 'Shotaro', memberKo: '쇼타로', color: '#7b61ff', text: '今天练习室的镜子擦得很亮，跳舞的时候心情也变好了。', time: '10分钟前', likes: 892, comments: 74 },
+            { id: 'wv-shotaro-2', user: 'RIIZE', member: 'Shotaro', memberKo: '쇼타로', color: '#7b61ff', text: '大家最近有在听什么新歌吗？我想更新一下练习歌单。', time: '5小时前', likes: 431, comments: 36 },
+            { id: 'wv-eunseok-1', user: 'RIIZE', member: 'Eunseok', memberKo: '은석', color: '#ff8a65', text: '刚结束吉他练习，手指有点痛但很开心。', time: '25分钟前', likes: 611, comments: 48 },
+            { id: 'wv-eunseok-2', user: 'RIIZE', member: 'Eunseok', memberKo: '은석', color: '#ff8a65', text: '首尔的秋天很适合散步，你们那边降温了吗？', time: '6小时前', likes: 388, comments: 29 },
+            { id: 'wv-sungchan-1', user: 'RIIZE', member: 'Sungchan', memberKo: '성찬', color: '#4fc3f7', text: '今天的运动量达标，晚饭奖励自己一份炸鸡。', time: '40分钟前', likes: 755, comments: 63 },
+            { id: 'wv-sungchan-2', user: 'RIIZE', member: 'Sungchan', memberKo: '성찬', color: '#4fc3f7', text: '录制结束后看到粉丝的留言，疲惫一下子消失了。', time: '7小时前', likes: 1024, comments: 91 },
+            { id: 'wv-wonbin-1', user: 'RIIZE', member: 'Wonbin', memberKo: '원빈', color: '#ba68c8', text: '最近在循环一首老歌，副歌部分怎么听都不腻。', time: '1小时前', likes: 936, comments: 87 },
+            { id: 'wv-wonbin-2', user: 'RIIZE', member: 'Wonbin', memberKo: '원빈', color: '#ba68c8', text: '练习到很晚，出来发现下雨了，大家出门记得带伞。', time: '8小时前', likes: 502, comments: 44 },
+            { id: 'wv-sohee-1', user: 'RIIZE', member: 'Sohee', memberKo: '소희', color: '#ffd54f', text: '今天声乐课被老师夸了，开心到想转圈。', time: '1小时前', likes: 687, comments: 52 },
+            { id: 'wv-sohee-2', user: 'RIIZE', member: 'Sohee', memberKo: '소희', color: '#ffd54f', text: '发现一家很好吃的年糕店，下次想带成员们一起去。', time: '9小时前', likes: 413, comments: 38 },
+            { id: 'wv-anton-1', user: 'RIIZE', member: 'Anton', memberKo: '안톤', color: '#00cbd5', text: '今天的风很舒服，练习结束后在路边站了一会儿。', time: '2小时前', likes: 821, comments: 76 },
+            { id: 'wv-anton-2', user: 'RIIZE', member: 'Anton', memberKo: '안톤', color: '#00cbd5', text: '今天语言交换学了一句新中文，发音比上次好多了。', time: '10小时前', likes: 574, comments: 61 }
         ],
         tiktok: [
             { id: 'tt1', user: 'seoul_daily', emoji: '🏃', bg: 'linear-gradient(160deg,#232526,#414345)', text: '首尔地铁换乘狂奔实录，差点把鞋跑掉。', song: 'original sound - seoul_daily', likes: 1203, comments: 86, shares: 34 },
@@ -1363,7 +1527,7 @@
 
     const bestieChapters = [
         {
-            title: '初遇后的夜聊', date: '9月28日', time: '21:15',
+            title: '初遇后的夜聊', date: '9月28日', time: '21:15', opener: '救命，我正在刷Anton物料！',
             messages: [
                 { sender: 'other', text: '救命，我正在刷Anton物料！' },
                 { sender: 'me', text: '停！我在弘大livehouse偶遇他，还加上Kkt了。' },
@@ -1375,7 +1539,7 @@
             ]
         },
         {
-            title: '银杏与晚霞', date: '9月30日', time: '17:25',
+            title: '银杏与晚霞', date: '9月30日', time: '17:25', opener: '官推刚发Anton银杏自拍，氛围感绝了！',
             messages: [
                 { sender: 'other', text: '官推刚发Anton银杏自拍，氛围感绝了！' },
                 { sender: 'me', text: '巧了，他刚发给我一张路边银杏，还帮我整理韩语作业。' },
@@ -1387,7 +1551,7 @@
             ]
         },
         {
-            title: '见面之后', date: '10月3日', time: '16:20',
+            title: '见面之后', date: '10月3日', time: '16:20', opener: '今天见面顺利吗！',
             messages: [
                 { sender: 'other', text: '今天见面顺利吗！' },
                 { sender: 'me', text: '超顺利，他中文进步好大，分开还发语音说很开心。' },
@@ -1399,7 +1563,7 @@
             ]
         },
         {
-            title: '暴雨送伞', date: '10月7日', time: '19:10',
+            title: '暴雨送伞', date: '10月7日', time: '19:10', opener: '外面暴雨，你那边还好吗？',
             messages: [
                 { sender: 'me', text: '外面暴雨，好多人被困在路上！' },
                 { sender: 'me', text: '我在图书馆没带伞，他专门送伞过来给我。' },
@@ -1412,7 +1576,7 @@
             ]
         },
         {
-            title: '礼物交换前', date: '10月12日', time: '21:40',
+            title: '礼物交换前', date: '10月12日', time: '21:40', opener: '所以你们约好交换礼物了？',
             messages: [
                 { sender: 'other', text: '所以你们约好交换礼物了？' },
                 { sender: 'me', text: '对，我准备了桂花糕，他买了中文诗集。' },
@@ -1431,42 +1595,151 @@
                     time: chapter.time
                 });
             }
-            chapter.messages.forEach(msg => {
-                story.push({ ...msg, time: msg.time || chapter.time });
+            chapter.messages.forEach((msg, msgIndex) => {
+                const step = { ...msg, time: msg.time || chapter.time };
+                if (msgIndex === chapter.messages.length - 1) step.chapterEnd = true;
+                story.push(step);
             });
         });
         return story;
     }
 
+    let bestieMessageQueue = [];
+    let bestieQueueRunning = false;
+
     function appendBestieChapter(index) {
         const chapter = bestieChapters[index - 1];
-        if (!chapter || chapter.added) return;
+        if (!chapter || chapter.queued) return;
         const marker = `第 ${index} 次夜聊`;
         if (contacts.bestie.history.some(m => m.sender === 'system' && m.text && m.text.includes(marker))) return;
-        chapter.added = true;
+        chapter.queued = true;
 
-        contacts.bestie.history.push({
-            sender: 'system',
+        bestieMessageQueue.push({
+            kind: 'divider',
             text: `第 ${index} 次夜聊 · ${chapter.date} ${chapter.time}`,
             time: chapter.time
         });
-        chapter.messages.forEach(msg => {
-            contacts.bestie.history.push({ sender: msg.sender, text: msg.text, time: chapter.time });
+        bestieMessageQueue.push({
+            kind: 'message',
+            sender: 'other',
+            text: chapter.opener || (chapter.messages.find(m => m.sender === 'other') || {}).text || '在吗？',
+            time: chapter.time,
+            notify: true,
+            unlock: true
         });
+        processBestieQueue();
+    }
 
+    function processBestieQueue() {
+        if (bestieQueueRunning) return;
+        const item = bestieMessageQueue.shift();
+        if (!item) return;
+        bestieQueueRunning = true;
+
+        if (item.kind === 'divider') {
+            contacts.bestie.history.push({ sender: 'system', text: item.text, time: item.time });
+            if (currentChatId === 'bestie') {
+                appendMessageUI('system', item.text, item.time, contacts.bestie, false);
+            }
+            renderKakaoChatList();
+            setTimeout(() => {
+                bestieQueueRunning = false;
+                processBestieQueue();
+            }, 450);
+            return;
+        }
+
+        contacts.bestie.history.push({ sender: item.sender, text: item.text, time: item.time });
+        if (currentChatId === 'bestie') {
+            appendMessageUI(item.sender, item.text, item.time, contacts.bestie, false);
+        } else {
+            contacts.bestie.unread = (contacts.bestie.unread || 0) + 1;
+            if (item.notify) {
+                showBanner([{ title: '好闺闺 婷婷', text: item.text, avatar: '👩‍🦰', target: 'bestie' }], 'bestie');
+            }
+        }
+        if (item.unlock) {
+            contacts.bestie.freeChat = true;
+            if (!contacts.bestie.isTyping) contacts.bestie.canSend = true;
+        }
         renderKakaoChatList();
 
-        if (currentChatId === 'bestie') {
-            const chatArea = document.getElementById('chatArea');
-            chatArea.innerHTML = '';
-            contacts.bestie.history.forEach(msg => {
-                appendMessageUI(msg.sender, msg.text || msg.reply, msg.time, contacts.bestie, false, msg.image || null);
-            });
-            chatArea.scrollTop = chatArea.scrollHeight;
-        } else {
-            const last = chapter.messages[chapter.messages.length - 1];
-            showBanner([{ title: '好闺闺 婷婷', text: last.text, avatar: '👩‍🦰', target: 'bestie' }], 'bestie');
+        setTimeout(() => {
+            bestieQueueRunning = false;
+            processBestieQueue();
+        }, 850);
+    }
+
+    const bestieReplyRules = [
+        { re: /你好|嗨|在吗|在不在|hello|hi/i, replies: ['在呢在呢！', '我刚想找你！', '你终于来啦。', '来来来，快跟我说。'] },
+        { re: /谢谢|感谢|麻烦你/, replies: ['跟我还客气什么。', '下次请我喝奶茶就行。', '你开心就好。', '我们之间不用说这个。'] },
+        { re: /哈哈|笑死|好玩|搞笑/, replies: ['你笑什么，快说！', '我也笑死了。', '别一个人笑，分享给我。', '这段我要截图收藏。'] },
+        { re: /anton|灿荣|李灿荣|안톤/i, replies: ['？真的是李灿荣吗？', '他真人是不是软软安静的？', '你现在心跳是不是还没缓过来？', '这也太像偶像剧开场了。'] },
+        { re: /livehouse|弘大|偶遇|碰到|遇见/, replies: ['救命，这也太梦幻了！', '所以你们是怎么说上话的？', '这也太巧了吧！', '我宣布这是本月最佳剧情。'] },
+        { re: /银杏|晚霞|风景|秋天/, replies: ['官推刚发Anton银杏自拍，氛围感绝了！', '他还特意拍给你看，细节好戳。', '秋天的首尔也太适合恋爱了。', '这张照片真的很有电影感。'] },
+        { re: /图片|照片|截图/, replies: ['这张好有氛围感。', '你拍的吗？构图不错。', '发原图给我！', '我保存了。'] },
+        { re: /咖啡|见面|约|练习|语言交换|窗边/, replies: ['约会进度我要实时跟进！', '咖啡馆加语言交换，这不就是偶像剧？', '他居然还帮你占窗边位置。', '蜂蜜面包好吃吗？重点跑偏。'] },
+        { re: /加练|取消|训练|公司|行程/, replies: ['难怪！就算去不了，还特意拍晚霞给你看。', '工作行程没办法，但他有认真解释。', '这个细节超戳，慢慢来。', '他还在意你的感受，这点很加分。'] },
+        { re: /柚子茶|礼物|诗集|桂花糕|便利店|热可可/, replies: ['天，他把你随口一句话记牢了！', '双向准备礼物，我先嗑为敬。', '柚子茶和桂花糕，甜度超标。', '中文诗集这个礼物也太用心了。'] },
+        { re: /伞|暴雨|下雨|图书馆|淋湿/, replies: ['行动派温柔直接杀我！', '专门送伞也太加分了。', '他有没有淋湿？', '这种时候出现真的很让人心动。'] },
+        { re: /紧张|心动|喜欢|开心|放松/, replies: ['你是不是心动一点点？', '别紧张，他看起来也很认真。', '这种细腻的温柔很难得。', '慢慢相处，好饭不怕晚。'] },
+        { re: /论文|作业|考试|发表|韩语|听力/, replies: ['论文先放一边，先跟我说说Anton。', '你韩语已经很好了，别给自己太大压力。', '需要我帮你改发表稿吗？', '听力作业发我看看，我帮你顺一遍。'] },
+        { re: /转账|钱|韩元|红包/, replies: ['怎么突然转账？', '你发财了？', '收到，谢谢老板。', '这我可就不客气了。'] },
+        { re: /定位|位置|在哪/, replies: ['离我远吗？', '这地方我知道！', '发个定位给我。', '你到了吗？'] },
+        { re: /晚安|睡觉|困|累|休息/, replies: ['早点睡，明天再跟我细说。', '今天辛苦啦，抱抱。', '别熬太晚，黑眼圈会抗议的。', '睡醒记得继续更新进度。'] },
+        { re: /他|她/, replies: ['他对你真的很上心。', '你觉得他是什么意思？', '然后他怎么说？', '这个反应有点好嗑。'] }
+    ];
+    const bestieGeneralReplies = ['然后呢然后呢？', '展开说说！', '我在听我在听。', '这也太让人好奇了。', '所以你现在是什么感觉？', '我已经开始替你紧张了。', '这段必须写进回忆录。'];
+    let bestieUsedReplies = new Set();
+
+    function pickBestieReply(list) {
+        let pool = list.filter(r => !bestieUsedReplies.has(r));
+        if (!pool.length) {
+            bestieUsedReplies.clear();
+            pool = list;
         }
+        const reply = pool[Math.floor(Math.random() * pool.length)];
+        bestieUsedReplies.add(reply);
+        return reply;
+    }
+
+    function chooseBestieReply(text) {
+        const value = String(text || '');
+        for (const rule of bestieReplyRules) {
+            if (rule.re.test(value)) return pickBestieReply(rule.replies);
+        }
+        return pickBestieReply(bestieGeneralReplies);
+    }
+
+    function generateBestieReply(text) {
+        const contact = contacts.bestie;
+        if (!contact) return;
+        contact.isTyping = true;
+        contact.canSend = false;
+        const titleEl = document.getElementById('chatTitle');
+        if (currentChatId === 'bestie') {
+            titleEl.innerHTML = '<span class="typing-indicator">对方正在输入中…</span>';
+        }
+        setTimeout(() => {
+            try {
+                const reply = chooseBestieReply(text);
+                contact.history.push({ sender: 'other', text: reply, time: '刚刚' });
+                if (currentChatId === 'bestie') {
+                    appendMessageUI('other', reply, '刚刚', contact, false);
+                } else {
+                    contact.unread = (contact.unread || 0) + 1;
+                    renderKakaoChatList();
+                    showBanner([{ title: '好闺闺 婷婷', text: reply, avatar: '👩‍🦰', target: 'bestie' }], 'bestie');
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                if (currentChatId === 'bestie') titleEl.textContent = '好闺闺 婷婷';
+                contact.isTyping = false;
+                contact.canSend = true;
+                renderKakaoChatList();
+            }
+        }, 950);
     }
 
     function addAntonSunsetMoment() {
@@ -1542,10 +1815,14 @@
 
         contacts.mom.history.push({ sender: 'other', text: '下课了吗？', time: '14:27' });
 
-        contacts.bestie.history = [];
+        contacts.bestie.history = [
+            { sender: 'other', text: '你在干嘛？', time: '14:33' }
+        ];
         contacts.bestie.script = [];
         contacts.bestie.scriptIndex = 99;
-        contacts.bestie.canSend = false;
+        contacts.bestie.canSend = true;
+        contacts.bestie.freeChat = true;
+        contacts.bestie.isTyping = false;
 
         contacts.anton.history = [
             { sender: 'system', text: '第 1 篇 · livehouse 初遇 · 9月28日 21:12', time: '21:12' },
@@ -1555,7 +1832,12 @@
         contacts.anton.scriptIndex = 0;
         contacts.anton.isTyping = false;
         contacts.anton.canSend = false;
+        contacts.anton.paused = false;
         contacts.anton.completedActions = {};
+
+        contacts.mom.unread = 1;
+        contacts.bestie.unread = 1;
+        contacts.anton.unread = 1;
 
         contacts.mom.scriptIndex = 1;
 
@@ -1566,6 +1848,7 @@
         setTimeout(() => {
             showBanner([
                 { title: '妈妈', text: '下课了吗？', avatar: '👩', target: 'mom' },
+                { title: '好闺闺 婷婷', text: '你在干嘛？', avatar: '👩‍🦰', target: 'bestie' },
                 { title: 'Anton', text: '안녕하세요，我是刚刚livehouse碰到的Anton。', avatar: `<img src="${ANTON_AVATAR_URL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`, target: 'anton' }
             ], 'kakao-list');
         }, 800);
@@ -1581,9 +1864,11 @@
         });
         DOCK_APPS.forEach(id => {
             const el = document.createElement('div'); el.className = 'app';
-            el.innerHTML = `<div class="app-icon">${ICONS[id]}</div>`;
+            const badge = id === 'kakao-list' ? '<span class="app-badge" id="kakaoAppBadge"></span>' : '';
+            el.innerHTML = `<div class="app-icon">${ICONS[id]}</div>${badge}`;
             el.onclick = () => openApp(id); dock.appendChild(el);
         });
+        updateKakaoBadge();
     }
 
     // ==================== 社交 App 渲染与交互 ====================
@@ -1605,12 +1890,26 @@
     }
 
     function refreshFeed(app, silent) {
-        const counts = { x: 6, threads: 5, instagram: 4, weverse: 5, tiktok: 5 };
+        const counts = { x: 6, threads: 5, instagram: 4, weverse: 6, tiktok: 5 };
         if (!socialPools[app]) return;
         const mine = (socialFeeds[app] || []).filter(p => p.mine || p.pinned);
-        const pool = socialPools[app].filter(p => !mine.some(m => m.id === p.id));
-        const want = Math.max(1, (counts[app] || 5) - mine.length);
-        socialFeeds[app] = mine.concat(shuffleArray(pool).slice(0, want));
+
+        if (app === 'weverse') {
+            const members = ['Shotaro', 'Eunseok', 'Sungchan', 'Wonbin', 'Sohee', 'Anton'];
+            const chosen = mine.slice();
+            members.forEach(member => {
+                const candidates = socialPools.weverse.filter(p =>
+                    p.member === member && !chosen.some(c => c.id === p.id)
+                );
+                if (candidates.length) chosen.push(candidates[Math.floor(Math.random() * candidates.length)]);
+            });
+            socialFeeds.weverse = chosen;
+        } else {
+            const pool = socialPools[app].filter(p => !mine.some(m => m.id === p.id));
+            const want = Math.max(1, (counts[app] || 5) - mine.length);
+            socialFeeds[app] = mine.concat(shuffleArray(pool).slice(0, want));
+        }
+
         socialRefreshAt[app] = Date.now();
         if (app === 'tiktok') tiktokIndex = 0;
         renderSocial(app);
@@ -1697,12 +1996,20 @@
         const el = document.getElementById('weverseFeed');
         if (!el) return;
         el.innerHTML = `
-            <div class="wv-banner"><h3>RIIZE · BRIIZE</h3><p>官方社区 · 和 Anton 一起分享日常</p></div>
+            <div class="wv-banner">
+                <h3>RIIZE · BRIIZE</h3>
+                <p>官方社区 · 六位成员的日常</p>
+                <div class="wv-members">
+                    <span class="wv-member">Shotaro</span><span class="wv-member">Eunseok</span>
+                    <span class="wv-member">Sungchan</span><span class="wv-member">Wonbin</span>
+                    <span class="wv-member">Sohee</span><span class="wv-member">Anton</span>
+                </div>
+            </div>
             ${socialFeeds.weverse.map(p => `
                 <div class="wv-post">
                     <div class="post-header">
                         <div class="post-avatar" style="background:${p.color || '#00cbd5'};">${escapeHtml((p.member || 'R')[0])}</div>
-                        <div><div class="post-user">${escapeHtml(p.member || p.user)}</div><div style="font-size:10px;color:#8e8e93;">${escapeHtml(p.time)}</div></div>
+                        <div><div class="post-user">${escapeHtml(p.member || p.user)}</div><div style="font-size:10px;color:#8e8e93;">${p.memberKo ? escapeHtml(p.memberKo) + ' · ' : ''}${escapeHtml(p.time)}</div></div>
                     </div>
                     <div class="post-text">${escapeHtml(p.text)}</div>
                     ${p.images && p.images.length ? `<div class="wv-grid">${p.images.map(src => `<img src="${src}" alt="" onclick="previewImage(this.src)">`).join('')}</div>` : ''}
@@ -1822,8 +2129,9 @@
         let html = '';
         Object.values(contacts).forEach(c => {
             const lastMsg = c.history.length > 0 ? c.history[c.history.length - 1] : null;
-            const previewText = lastMsg ? (lastMsg.text || lastMsg.reply) : '开始聊天吧';
+            const previewText = lastMsg ? (lastMsg.text || lastMsg.reply || (lastMsg.image ? '[图片]' : '')) : '开始聊天吧';
             const timeText = lastMsg ? lastMsg.time : '';
+            const unread = c.unread || 0;
             let avatarHtml = c.avatar;
             if(c.id === 'anton') avatarHtml = `<img src="${ANTON_AVATAR_URL}" style="width:100%;height:100%;object-fit:cover;">`;
             else avatarHtml = `<div style="width:100%;height:100%;background:${c.color};display:flex;align-items:center;justify-content:center;color:#fff;">${c.avatar}</div>`;
@@ -1832,14 +2140,26 @@
                 <div class="kakao-friend-item" onclick="openChat('${c.id}')">
                     <div class="kakao-friend-avatar" style="padding:0;">${avatarHtml}</div>
                     <div class="kakao-friend-info">
-                        <div class="kakao-friend-name">${c.name}</div>
+                        <div class="kakao-friend-name">${escapeHtml(c.name)}${c.favorite ? ' ⭐' : ''}${c.blocked ? ' <span style="color:#ff3b30;font-size:10px;">已拉黑</span>' : ''}</div>
                         <div class="kakao-friend-msg">${previewText}</div>
                     </div>
-                    <div style="font-size:11px;color:#8e8e93;align-self:flex-start;margin-top:4px;">${timeText}</div>
+                    <div class="kakao-row-meta">
+                        <div class="kakao-row-time">${timeText}</div>
+                        ${unread > 0 ? `<div class="kakao-unread">${unread > 99 ? '99+' : unread}</div>` : ''}
+                    </div>
                 </div>
             `;
         });
         container.innerHTML = html;
+        updateKakaoBadge();
+    }
+
+    function updateKakaoBadge() {
+        const total = Object.values(contacts).reduce((n, c) => n + (c.unread || 0), 0);
+        const badge = document.getElementById('kakaoAppBadge');
+        if (!badge) return;
+        badge.textContent = total > 99 ? '99+' : String(total);
+        badge.style.display = total > 0 ? 'flex' : 'none';
     }
 
     function renderMoments() {
@@ -1912,8 +2232,18 @@
 
     // ==================== 聊天室逻辑 ====================
     function openChat(id) {
+        if (kakaoCall.active) endKakaoCall(true);
+        closeChatPanels();
+        closeChatSettings();
         currentChatId = id;
         const contact = contacts[id];
+        contact.unread = 0;
+        if (id === 'bestie') {
+            contact.freeChat = true;
+            contact.isTyping = false;
+            contact.canSend = true;
+        }
+        renderKakaoChatList();
         document.getElementById('chatTitle').textContent = contact.name + (id === 'anton' ? ' ❤️' : '');
         
         const chatArea = document.getElementById('chatArea');
@@ -1927,11 +2257,212 @@
     }
 
     function closeKakaoChat() {
+        endKakaoCall(true);
+        closeChatPanels();
+        closeChatSettings();
         document.getElementById('view-kakao-chat').classList.remove('active');
         document.getElementById('view-kakao-list').classList.add('active');
-        document.getElementById('emojiPanel').classList.remove('show');
         renderKakaoChatList();
         currentChatId = null;
+    }
+
+    function closeChatPanels() {
+        const plus = document.getElementById('plusPanel');
+        const emoji = document.getElementById('emojiPanel');
+        if (plus) plus.classList.remove('show');
+        if (emoji) emoji.classList.remove('show');
+    }
+
+    function togglePlusMenu() {
+        const plus = document.getElementById('plusPanel');
+        const emoji = document.getElementById('emojiPanel');
+        if (!plus) return;
+        if (emoji) emoji.classList.remove('show');
+        plus.classList.toggle('show');
+    }
+
+    function pickChatImage() {
+        closeChatPanels();
+        const input = document.getElementById('chatImageFile');
+        if (input) {
+            input.value = '';
+            input.click();
+        }
+    }
+
+    function handleChatImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const contact = contacts[currentChatId];
+        if (!contact) return;
+        if (contact.blocked) { showToast('你已拉黑对方，无法发送'); return; }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const raw = e.target.result;
+            const send = (src) => {
+                contact.history.push({ sender: 'me', text: '', time: '刚刚', image: src });
+                appendMessageUI('me', '', '刚刚', contact, false, src);
+                renderKakaoChatList();
+                closeChatPanels();
+                if (contact.freeChat) generateBestieReply('图片');
+            };
+            const img = new Image();
+            img.onload = function() {
+                try {
+                    const max = 900;
+                    const scale = Math.min(1, max / Math.max(img.width, img.height));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.round(img.width * scale);
+                    canvas.height = Math.round(img.height * scale);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    send(canvas.toDataURL('image/jpeg', 0.82));
+                } catch (err) {
+                    send(raw);
+                }
+            };
+            img.onerror = function() { send(raw); };
+            img.src = raw;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
+    }
+
+    function sendSelfMessage(text, replyContext) {
+        const contact = contacts[currentChatId];
+        if (!contact) return;
+        if (contact.blocked) { showToast('你已拉黑对方，无法发送'); return; }
+        contact.history.push({ sender: 'me', text, time: '刚刚' });
+        appendMessageUI('me', text, '刚刚', contact, false);
+        renderKakaoChatList();
+        closeChatPanels();
+        if (contact.freeChat) generateBestieReply(replyContext || text);
+    }
+
+    function sendTransfer() {
+        const amount = prompt('转账金额（韩元）', '10000');
+        if (amount === null) return;
+        const n = parseInt(String(amount).replace(/[^\d]/g, ''), 10);
+        if (!n || n <= 0) { showToast('请输入有效金额'); return; }
+        sendSelfMessage(`💰 转账 ₩${n.toLocaleString()}`, '转账');
+    }
+
+    function sendLocation() {
+        sendSelfMessage('📍 位置：弘大入口 · 首尔麻浦区', '定位');
+    }
+
+    function openChatSettings() {
+        const contact = contacts[currentChatId];
+        if (!contact) return;
+        closeChatPanels();
+        document.getElementById('chatSettingsName').textContent = contact.name + ' · 聊天设置';
+        document.getElementById('blockChatBtn').textContent = contact.blocked ? '✅ 解除拉黑' : '🚫 拉黑';
+        document.getElementById('favoriteChatBtn').textContent = contact.favorite ? '⭐ 取消收藏' : '⭐ 收藏';
+        document.getElementById('chatSettingsSheet').classList.add('show');
+    }
+
+    function closeChatSettings() {
+        document.getElementById('chatSettingsSheet').classList.remove('show');
+    }
+
+    function blockCurrentChat() {
+        const contact = contacts[currentChatId];
+        if (!contact) return;
+        contact.blocked = !contact.blocked;
+        closeChatSettings();
+        renderKakaoChatList();
+        showToast(contact.blocked ? '已拉黑' : '已解除拉黑');
+        if (contact.blocked) closeKakaoChat();
+    }
+
+    function deleteCurrentChat() {
+        const contact = contacts[currentChatId];
+        if (!contact) return;
+        if (!confirm('删除与「' + contact.name + '」的聊天记录？')) return;
+        contact.history = [];
+        contact.unread = 0;
+        closeChatSettings();
+        closeKakaoChat();
+        renderKakaoChatList();
+        showToast('聊天记录已删除');
+    }
+
+    function favoriteCurrentChat() {
+        const contact = contacts[currentChatId];
+        if (!contact) return;
+        contact.favorite = !contact.favorite;
+        closeChatSettings();
+        renderKakaoChatList();
+        showToast(contact.favorite ? '已收藏' : '已取消收藏');
+    }
+
+    // ==================== KakaoTalk 语音 / 视频通话 ====================
+    let kakaoCall = { active: false, type: 'voice', seconds: 0, timer: null, connect: null, muted: false, cameraOn: true };
+
+    function startKakaoCall(type) {
+        const contact = contacts[currentChatId];
+        if (!contact) { showToast('请先打开一个聊天'); return; }
+        if (contact.blocked) { showToast('你已拉黑对方，无法通话'); return; }
+        if (kakaoCall.active) return;
+        closeChatPanels();
+        if (kakaoCall.connect) clearTimeout(kakaoCall.connect);
+        if (kakaoCall.timer) clearInterval(kakaoCall.timer);
+        kakaoCall = { active: true, type, seconds: 0, timer: null, connect: null, muted: false, cameraOn: true };
+
+        const overlay = document.getElementById('kakaoCallOverlay');
+        overlay.classList.add('show');
+        overlay.classList.toggle('video', type === 'video');
+        overlay.classList.remove('camera-off');
+
+        document.getElementById('kakaoCallName').textContent = contact.name;
+        document.getElementById('kakaoCallKind').textContent = type === 'video' ? '视频通话' : '语音通话';
+        document.getElementById('kakaoCallStatus').textContent = '正在呼叫…';
+        document.getElementById('kakaoCallAvatar').innerHTML = contact.id === 'anton'
+            ? `<img src="${ANTON_AVATAR_URL}" alt="">`
+            : contact.avatar;
+        document.getElementById('kakaoMuteBtn').textContent = '🎙️';
+        document.getElementById('kakaoCameraBtn').textContent = '📹';
+
+        kakaoCall.connect = setTimeout(() => {
+            if (!kakaoCall.active) return;
+            document.getElementById('kakaoCallStatus').textContent = '通话中 00:00';
+            kakaoCall.timer = setInterval(() => {
+                kakaoCall.seconds++;
+                document.getElementById('kakaoCallStatus').textContent = `通话中 ${formatCallTime(kakaoCall.seconds)}`;
+            }, 1000);
+        }, 1500);
+    }
+
+    function endKakaoCall(silent) {
+        if (!kakaoCall.active) {
+            const overlay = document.getElementById('kakaoCallOverlay');
+            if (overlay) overlay.classList.remove('show');
+            return;
+        }
+        kakaoCall.active = false;
+        if (kakaoCall.connect) clearTimeout(kakaoCall.connect);
+        if (kakaoCall.timer) clearInterval(kakaoCall.timer);
+        kakaoCall.connect = null;
+        kakaoCall.timer = null;
+        const overlay = document.getElementById('kakaoCallOverlay');
+        if (overlay) overlay.classList.remove('show');
+        if (!silent) showToast(kakaoCall.type === 'video' ? '视频通话已结束' : '语音通话已结束');
+    }
+
+    function toggleKakaoMute() {
+        if (!kakaoCall.active) return;
+        kakaoCall.muted = !kakaoCall.muted;
+        document.getElementById('kakaoMuteBtn').textContent = kakaoCall.muted ? '🔇' : '🎙️';
+        showToast(kakaoCall.muted ? '已静音' : '已取消静音');
+    }
+
+    function toggleKakaoCamera() {
+        if (!kakaoCall.active || kakaoCall.type !== 'video') return;
+        kakaoCall.cameraOn = !kakaoCall.cameraOn;
+        const overlay = document.getElementById('kakaoCallOverlay');
+        overlay.classList.toggle('camera-off', !kakaoCall.cameraOn);
+        document.getElementById('kakaoCameraBtn').textContent = kakaoCall.cameraOn ? '📹' : '📷';
+        showToast(kakaoCall.cameraOn ? '摄像头已开启' : '摄像头已关闭');
     }
 
     // ==================== Home 键逻辑 (核心) ====================
@@ -1939,18 +2470,25 @@
         document.querySelectorAll('.app-view').forEach(view => {
             view.classList.remove('active');
         });
-        document.getElementById('emojiPanel').classList.remove('show');
+        closeChatPanels();
+        closeChatSettings();
         currentChatId = null;
         activeApp = null;
         clearNotificationQueue();
         endCall(true);
+        endKakaoCall(true);
         renderKakaoChatList();
     }
 
     // ==================== 剧本状态与发送 ====================
     function checkScriptState(contactArg) {
         const contact = contactArg || contacts[currentChatId];
-        if (!contact || contact.scriptIndex >= contact.script.length) return;
+        if (!contact) return;
+        if (contact.paused) {
+            if (currentChatId === contact.id) appendContinueButton(contact);
+            return;
+        }
+        if (contact.scriptIndex >= contact.script.length) return;
         const nextStep = contact.script[contact.scriptIndex];
 
         if (nextStep.sender === 'system') {
@@ -1965,7 +2503,42 @@
             if (!contact.isTyping) simulateOtherReply(contact, nextStep);
         } else {
             contact.canSend = true;
+            fillSuggestedReply(contact);
         }
+    }
+
+    function fillSuggestedReply(contact) {
+        if (!contact || contact.freeChat || currentChatId !== contact.id) return;
+        const input = document.getElementById('chatInput');
+        if (!input || input.value.trim()) return;
+        const step = contact.script[contact.scriptIndex];
+        if (contact.canSend && step && step.sender === 'me') {
+            input.value = step.reply || step.text || '';
+            input.setSelectionRange(input.value.length, input.value.length);
+        }
+    }
+
+    function appendContinueButton(contact) {
+        if (currentChatId !== contact.id) return;
+        const existing = document.getElementById('storyContinueBtn');
+        if (existing) existing.remove();
+        const hasNext = contact.scriptIndex < contact.script.length;
+        const btn = document.createElement('div');
+        btn.id = 'storyContinueBtn';
+        btn.className = 'k-continue' + (hasNext ? '' : ' done');
+        btn.textContent = hasNext ? '本篇结束 · 点击继续下一篇 ›' : '本篇结束 · 全篇完';
+        if (hasNext) btn.onclick = () => continueStory(contact.id);
+        document.getElementById('chatArea').appendChild(btn);
+        document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
+    }
+
+    function continueStory(id) {
+        const contact = contacts[id];
+        if (!contact || !contact.paused) return;
+        contact.paused = false;
+        const btn = document.getElementById('storyContinueBtn');
+        if (btn) btn.remove();
+        checkScriptState(contact);
     }
 
     function simulateOtherReply(contact, step) {
@@ -1984,6 +2557,7 @@
                 titleEl.textContent = contact.name + (contact.id === 'anton' ? ' ❤️' : '');
                 appendMessageUI('other', step.text, step.time, contact, false, step.image || null);
             } else {
+                contact.unread = (contact.unread || 0) + 1;
                 renderKakaoChatList();
                 const av = contact.id === 'anton'
                     ? `<img src="${ANTON_AVATAR_URL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
@@ -1992,13 +2566,28 @@
             }
             contact.scriptIndex++; contact.isTyping = false;
             if (step.after) runStoryAfter(contact, step.after);
+            renderKakaoChatList();
+            if (step.chapterEnd) {
+                contact.paused = true;
+                contact.canSend = false;
+                if (currentChatId === contact.id) appendContinueButton(contact);
+                return;
+            }
             checkScriptState(contact);
         }, 1500);
     }
 
+    function onChatInputFocus() {
+        setTimeout(() => {
+            const area = document.getElementById('chatArea');
+            if (area) area.scrollTop = area.scrollHeight;
+        }, 260);
+    }
+
     function handleInputClick() {
         const contact = contacts[currentChatId];
-        if (!contact || !contact.canSend) return;
+        if (!contact || contact.freeChat) return;
+        if (!contact.canSend) return;
         const input = document.getElementById('chatInput');
         if (input.value) return;
         const step = contact.script[contact.scriptIndex];
@@ -2010,10 +2599,28 @@
 
     function sendMsg() {
         const contact = contacts[currentChatId];
-        if (!contact || !contact.canSend) return;
+        if (!contact) return;
+        if (contact.blocked) { showToast('你已拉黑对方，无法发送'); return; }
+        if (contact.freeChat && contact.isTyping) {
+            showToast('等婷婷回复完再发');
+            return;
+        }
+        if (!contact.canSend && !contact.freeChat) return;
+
         const input = document.getElementById('chatInput');
         const text = input.value.trim();
         if (!text) return;
+
+        if (contact.freeChat) {
+            contact.history.push({ sender: 'me', text, time: '刚刚' });
+            appendMessageUI('me', text, '刚刚', contact, true);
+            input.value = '';
+            closeChatPanels();
+            contact.canSend = false;
+            renderKakaoChatList();
+            generateBestieReply(text);
+            return;
+        }
 
         const step = contact.script[contact.scriptIndex];
         const time = step ? step.time : '刚刚';
@@ -2021,15 +2628,26 @@
         contact.history.push({ sender: 'me', text: text, time: time });
         appendMessageUI('me', text, time, contact, true);
         
-        input.value = ''; contact.canSend = false; contact.scriptIndex++;
+        input.value = ''; closeChatPanels(); contact.canSend = false; contact.scriptIndex++;
 
         if (step && step.after) runStoryAfter(contact, step.after);
+        renderKakaoChatList();
+
+        if (step && step.chapterEnd) {
+            contact.paused = true;
+            contact.canSend = false;
+            if (currentChatId === contact.id) appendContinueButton(contact);
+            return;
+        }
 
         if (contact.scriptIndex < contact.script.length) {
             const next = contact.script[contact.scriptIndex];
             if (next.sender === 'other') simulateOtherReply(contact, next);
             else if (next.sender === 'system') checkScriptState(contact);
-            else contact.canSend = true;
+            else {
+                contact.canSend = true;
+                fillSuggestedReply(contact);
+            }
         }
     }
 
@@ -2087,7 +2705,11 @@
     // ==================== 辅助功能 ====================
     const EMOJIS = ['😀','😁','😂','🤣','😊','😍','😘','🥰','😎','😭','😡','👍','🙏','🎉','❤️','🔥','✨','💯','🥺','😅','🤔','🙄'];
     function initEmoji() { document.getElementById('emojiPanel').innerHTML = EMOJIS.map(e => `<span onclick="insertEmoji('${e}')">${e}</span>`).join(''); }
-    function toggleEmoji() { document.getElementById('emojiPanel').classList.toggle('show'); }
+    function toggleEmoji() {
+        const plus = document.getElementById('plusPanel');
+        if (plus) plus.classList.remove('show');
+        document.getElementById('emojiPanel').classList.toggle('show');
+    }
     function insertEmoji(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.setSelectionRange(input.value.length, input.value.length); }
 
     // ==================== 通知队列：一次只弹一个人 ====================
@@ -2888,6 +3510,13 @@
                 c.isTyping = false;
                 c.canSend = false;
             });
+            if (contacts.bestie) {
+                contacts.bestie.freeChat = true;
+                contacts.bestie.script = [];
+                contacts.bestie.scriptIndex = 99;
+                contacts.bestie.isTyping = false;
+                contacts.bestie.canSend = true;
+            }
         }
 
         if (Array.isArray(data.momentsData)) momentsData = cloneData(data.momentsData);
